@@ -287,6 +287,128 @@ break;</pre>
     </div>
   </div>
 
+    <div class="get-input">
+      <input type="text" value="PLAY" readonly />
+      <button class="get-button">get</button>
+    </div>
+
+    <button id="copy-external" class="get-button" onclick="copyCode()">copy</button>
+
+    <div id="code-display" class="code-box">
+      <pre id="code-content">case 'play': {
+  if (!text) return m.reply('Masukkan judul lagu!\nContoh: *play Jakarta Hari Ini*');
+
+  await m.reply("✨ Tunggu Sebentar, Sedang Mencari Lagu...");
+
+  try {
+    const res = await fetch(`https://api.nekorinn.my.id/downloader/ytplay-savetube?q=${encodeURIComponent(text)}`);
+    if (!res.ok) return m.reply('Gagal mengambil data dari server.');
+    const data = await res.json();
+    if (!data.status) return m.reply('Lagu tidak ditemukan!');
+    const { title } = data.result.metadata;
+    const downloadUrl = data.result.downloadUrl;
+
+    await Danzz.sendMessage(m.chat, {
+      audio: { url: downloadUrl },
+      mimetype: 'audio/mpeg',
+      fileName: `${title}.mp3`,
+      ptt: false
+    }, { quoted: m });
+
+  } catch (e) {
+    console.error(e);
+    m.reply('Terjadi kesalahan saat memproses permintaanmu.');
+  }
+}
+break;</pre>
+    </div>
+  </div>
+  
+      <div class="get-input">
+      <input type="text" value="BRAT" readonly />
+      <button class="get-button">get</button>
+    </div>
+
+    <button id="copy-external" class="get-button" onclick="copyCode()">copy</button>
+
+    <div id="code-display" class="code-box">
+      <pre id="code-content">case 'stickbrat': {
+    if (!m.isGroup) return reply("Fitur ini khusus untuk grup ya!");
+
+    let text;
+
+    if (args.length >= 1) {
+        text = args.slice(0).join(" ");
+    } else if (m.quoted && m.quoted.text) {
+        text = m.quoted.text;
+    } else {
+        return m.reply("Masukkan teks atau reply teks yang ingin dijadikan sticker!");
+    }
+
+    if (!text) {
+        return m.reply(`Penggunaan: ${prefix + command} <teks>`);
+    }
+
+    try {
+    await Danzz.sendMessage(m.chat, { react: { text: "🕐", key: m.key } });
+        let ngawiStik = await getBuffer(`https://api.siputzx.my.id/api/m/brat?text=${encodeURIComponent(text)}`);
+        await Danzz.sendImageAsSticker(m.chat, ngawiStik, m, {
+            packname: `𓄯ִ ── ꯭𐑈ƚꪱִ𝖼𝗄ᧉׄ𝗋 ᎓`,
+            author: `Aina-md`
+        });
+    } catch (error) {
+        console.error("Error generating sticker:", error);
+        return m.reply("Maaf, terjadi kesalahan saat membuat sticker. Silakan coba lagi nanti.");
+    }
+}
+break;</pre>
+    </div>
+  </div>
+  
+  <div class="get-input">
+      <input type="text" value="BRATV2" readonly />
+      <button class="get-button">get</button>
+    </div>
+
+    <button id="copy-external" class="get-button" onclick="copyCode()">copy</button>
+
+    <div id="code-display" class="code-box">
+      <pre id="code-content">case "stickbratv2": {
+    if (!m.isGroup) return reply('khusus group');
+    if (!text) return reply('Masukkan teks yang ingin dijadikan sticker gerak\nContoh: .stickbrat Shincan hai');
+
+    try {
+        
+        const encodedText = encodeURIComponent(text);
+        const apiUrl = `https://fastrestapis.fasturl.cloud/maker/brat/animated?text=${encodedText}&mode=animated`;
+        
+        
+        await Danzz.sendMessage(m.chat, { react: { text: "🕒", key: m.key } });
+        
+
+        const videoBuffer = await getBuffer(apiUrl);
+        
+        
+        const sticker = new Sticker(videoBuffer, {
+            pack: 'Brat Video Sticker',
+            author: pushname,
+            type: StickerTypes.FULL,
+            categories: ['fun'],
+            quality: 70,
+        });
+        
+        
+        await Danzz.sendMessage(m.chat, await sticker.toMessage(), { quoted: m });
+
+    } catch (e) {
+        console.error('Error bratvid:', e);
+        reply('❌ Gagal membuat sticker. Silakan coba lagi nanti.');
+    }
+}
+break;</pre>
+    </div>
+  </div>
+
   <script>
     // Jam real-time
     function updateClock() {
